@@ -20,9 +20,11 @@
                     self.set();
                 },
                 onresize: function () {
+                    /*
+                    self.setPosition();*/
                     self.width = $(window).width(), self.height = $(window).height();
                     self.layerContrl.$content.width(self.width).height(self.height).css({ "top": "0px", "left": "0px" });
-                    self.setPosition();
+                    self.gird.onresize();
                 },
                 close: function () {
                     self.layerContrl = null;
@@ -58,7 +60,7 @@
             this.setData();
 
             //girdResize
-            var g = new girdResize([
+            var g = this.gird = new girdResize([
                 {
                     drag: [{ control: $fieldConfig.children(".dragSResize"), type: "s" }, { control: $fieldConfig.children(".dragWResize"), type: "w" }, { control: $fieldConfig.children(".dragSeResize"), type: "sw"}],
                     control: $fieldConfig,
@@ -92,6 +94,7 @@
                 }
                 }
             ]);
+            
         },
         initHtml: function () {
             this.initFieldConfigHtml();

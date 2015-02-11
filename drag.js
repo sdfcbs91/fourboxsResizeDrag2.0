@@ -3,14 +3,31 @@
 **/
 var girdResize = function (o) {
     this.configs = o;
+    this.options = { position: { left: 0.5, top: 0.5} };
     this.getWidth = function () { this.width = parseInt($(window).width() + $(window.document).scrollLeft()), this.paddingW = parseInt(this.width / 100); };
     this.getHeight = function () { this.height = parseInt($(window).height() + $(window.document).scrollTop()), this.paddingH = parseInt(this.height / 50); };
     this.setDefault = function () { this.blag = { drag: { width: true, height: true}} };
+    this.save = function () {
+        var position = this.getCenterPosition();
+        //if (position.left) {
+        this.options.position.left = position.left / this.width;
+        //}
+        //if (position.top) {
+        this.options.position.top = position.top / this.height;
+        // }
+    }
+    this.onresize = function () {
+        this.getWidth();
+        this.getHeight();
+        var p = this.options.position;
+        var position = { left: parseInt(this.width * p.left), top: parseInt(this.height * p.top) };
+        this.position(position);
+    }
     this.start = function () {
         this.getWidth();
         this.getHeight();
         this.setDefault();
-        position = { left: parseInt(this.width / 2), top: parseInt(this.height / 2) };
+        var position = { left: parseInt(this.width * 0.5), top: parseInt(this.height * 0.5) };
         this.position(position);
         this.event();
     }
@@ -38,13 +55,13 @@ var girdResize = function (o) {
             if (config.control && config.location) {
                 if (config.location in self) {
                     if (typeof config.control !== "object") config.control = $(config.control);
-                    
+
                     var size = self[config.location](position), control = config.control, blag = self.blag.drag;
                     if (blag.width) {
-                        control.width(size.width)[0].style.left = size.left
+                        control.width(size.width)[0].style.left = size.left;
                     }
                     if (blag.height) {
-                        control.height(size.height)[0].style.top = size.top
+                        control.height(size.height)[0].style.top = size.top;
                     }
 
                 }
@@ -120,6 +137,7 @@ var girdResize = function (o) {
                     //是否符合变化元素大小条件
                     if (upper.matchPosition(position)) {
                         upper.position(position);
+                        upper.save();
                     }
                     blag.width = true, blag.height = true;
                 });
